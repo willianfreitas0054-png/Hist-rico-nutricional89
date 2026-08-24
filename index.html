@@ -206,7 +206,7 @@
   </main>
 
   <script>
-    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyasBhMqtbovvuK1mqEQQIryTI_3EVi5Tgi2OgCec56fsk33KxDkjREWPRq89BD9XD2CA/exec";
+    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeVC1jOYTqJ9UpS1s8OlCBm6-er3tw7lh7Vk42gMJ1zGYBmBrEg1OeGNtgpjMQERy-/exec";
 
     let patients = [];
     let currentPatient = null;
@@ -218,11 +218,9 @@
       const tbody = document.getElementById("tablePatientsBody");
       tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--pine);">⏳ Carregando respostas da planilha...</td></tr>`;
 
-      // Remove script antigo se existir
       const scriptAntigo = document.getElementById("jsonp_script");
       if (scriptAntigo) scriptAntigo.remove();
 
-      // Injeta chamada JSONP
       const script = document.createElement("script");
       script.id = "jsonp_script";
       script.src = `${GOOGLE_APPS_SCRIPT_URL}?callback=onDadosPlanilhaRecebidos&t=${Date.now()}`;
@@ -232,7 +230,6 @@
       document.body.appendChild(script);
     };
 
-    // Callback disparado assim que o Google responde
     window.onDadosPlanilhaRecebidos = function(data) {
       if (Array.isArray(data)) {
         patients = data;
@@ -318,7 +315,6 @@
       addInfo(dSaude, "Peso Inicial", `${currentPatient.anamnese?.pesoInicial || '—'} kg`);
       addInfo(dSaude, "Treino", currentPatient.anamnese?.treino || "Musculação");
 
-      // Quinzenal
       const qList = document.getElementById("listQuinzenal"); qList.innerHTML = "";
       (currentPatient.quinzenal || []).forEach(q => {
         const card = document.createElement("div");
@@ -327,7 +323,6 @@
         qList.appendChild(card);
       });
 
-      // Mensal
       const mList = document.getElementById("listMensal"); mList.innerHTML = "";
       (currentPatient.mensal || []).forEach(m => {
         const card = document.createElement("div");
@@ -336,7 +331,6 @@
         mList.appendChild(card);
       });
 
-      // Peso Recente
       const todos = [...(currentPatient.quinzenal || []), ...(currentPatient.mensal || [])];
       const ultimo = todos.length > 0 ? todos[todos.length - 1].peso : currentPatient.anamnese?.pesoInicial;
       document.getElementById("detUltimoPeso").innerText = `${ultimo} kg`;
