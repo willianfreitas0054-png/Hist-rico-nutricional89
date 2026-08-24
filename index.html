@@ -439,6 +439,10 @@
 
   <!-- ============================== JAVASCRIPT GLOBAL ============================== -->
   <script>
+    // 1. CONFIGURAÇÃO DA SUA API DO GOOGLE APPS SCRIPT
+    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyasBhMqtbovvuK1mqEQQIryTI_3EVi5Tgi2OgCec56fsk33KxDkjREWPRq89BD9XD2CA/exec";
+
+    // 2. CONFIGURAÇÃO DO FIREBASE FIRESTORE
     const firebaseConfig = {
       apiKey: "AIzaSyBvJJktelKoZYoGT2hw2BBk1F3_CfZ5ZIk",
       authDomain: "prontuario-nutri.firebaseapp.com",
@@ -450,6 +454,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // 3. REGRAS DOS PLANOS
     const PLAN_CYCLES = {
       "Mensal Start": [
         { period: "Semana 1", formType: "[Inicial / Anamnese]", dueDays: 2 },
@@ -479,7 +484,7 @@
     let chartInstance = null;
     let currentFilter = "all";
 
-    // Funções Globais expostas no window
+    // 4. CARREGAR PACIENTES
     window.loadPatients = async function() {
       try {
         const snapshot = await db.collection("nutricionistas").doc(currentNutriEmail).collection("pacientes").get();
@@ -504,7 +509,6 @@
             };
           });
         } else {
-          // Mock data inicial
           patients = [
             {
               id: "p_arao",
@@ -544,6 +548,7 @@
       }
     };
 
+    // 5. RENDERIZAR DASHBOARD
     window.renderDashboard = function() {
       const search = (document.getElementById("inputSearch")?.value || "").toLowerCase();
       const today = new Date().toISOString().slice(0, 10);
@@ -609,6 +614,50 @@
       window.renderCalendarEvents();
     };
 
+    // 6. AVANÇAR ETAPA E NOTIFICAR GOOGLE AGENDA (API WEBHOOK)
+    window.handleAdvanceStage = async function(id) {
+      const p = patients.find(x => x.id === id);
+      if (!p) return;
+      const cycle = PLAN_CYCLES[p.plano] || PLAN_CYCLES["Mensal Start"];
+
+      if (p.stageIndex + 1 < cycle.length) {
+        p.stageIndex += 1;
+        const next = cycle[p.stageIndex];
+        const nextDate = new Date();
+        nextDate.setDate(nextDate.getDate() + next.dueDays);
+        const dueDateStr = nextDate.toISOString().slice(0, 10);
+
+        p.status = "PENDING_PATIENT";
+        p.nextAction = `Aguardando envio: ${next.formType}`;
+        p.nextDueDate = dueDateStr;
+
+        // Disparo via Webhook para criar o evento no Google Agenda
+        try {
+          fetch(GOOGLE_APPS_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "AVANCAR_ETAPA",
+              nomePaciente: p.nome,
+              email: p.email,
+              proximoForm: next.formType,
+              dataVencimento: dueDateStr
+            })
+          });
+        } catch (e) {
+          console.error("Erro ao enviar para Google Apps Script:", e);
+        }
+      } else {
+        p.status = "COMPLETED";
+        p.nextAction = "Plano Concluído — Oferecer Renovação";
+      }
+
+      await db.collection("nutricionistas").doc(currentNutriEmail).collection("pacientes").doc(p.id).set(p);
+      window.renderDashboard();
+    };
+
+    // 7. ABRIR PRONTUÁRIO
     window.openDetail = function(id) {
       currentPatient = patients.find(x => x.id === id);
       if (!currentPatient) return;
@@ -624,7 +673,6 @@
       const cycle = PLAN_CYCLES[currentPatient.plano] || PLAN_CYCLES["Mensal Start"];
       document.getElementById("detStageText").innerText = `Etapa: ${cycle[currentPatient.stageIndex]?.period || 'Final'} (${currentPatient.stageIndex + 1}/${cycle.length})`;
 
-      // Anamnese
       const a = currentPatient.anamnese || {};
       const dDados = document.getElementById("infoDados"); dDados.innerHTML = "";
       addInfo(dDados, "Nome", currentPatient.nome);
@@ -758,26 +806,6 @@
       document.getElementById(tabId).classList.remove("hidden");
     };
 
-    window.handleAdvanceStage = async function(id) {
-      const p = patients.find(x => x.id === id);
-      if (!p) return;
-      const cycle = PLAN_CYCLES[p.plano] || PLAN_CYCLES["Mensal Start"];
-      if (p.stageIndex + 1 < cycle.length) {
-        p.stageIndex += 1;
-        const next = cycle[p.stageIndex];
-        const nextDate = new Date();
-        nextDate.setDate(nextDate.getDate() + next.dueDays);
-        p.status = "PENDING_PATIENT";
-        p.nextAction = `Aguardando envio: ${next.formType}`;
-        p.nextDueDate = nextDate.toISOString().slice(0, 10);
-      } else {
-        p.status = "COMPLETED";
-        p.nextAction = "Plano Concluído — Oferecer Renovação";
-      }
-      await db.collection("nutricionistas").doc(currentNutriEmail).collection("pacientes").doc(p.id).set(p);
-      window.renderDashboard();
-    };
-
     window.renderCalendarEvents = function() {
       const cont = document.getElementById("calendarEventsList");
       cont.innerHTML = `
@@ -803,7 +831,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       window.loadPatients();
 
-      // Form Submits
+      // Submit: Anamnese
       document.getElementById("formAnamnese")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         const novo = {
@@ -830,6 +858,7 @@
         window.renderDashboard();
       });
 
+      // Submit: Quinzenal
       document.getElementById("formQuinzenal")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         if (!currentPatient) return;
@@ -848,6 +877,7 @@
         window.openDetail(currentPatient.id);
       });
 
+      // Submit: Mensal
       document.getElementById("formMensal")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         if (!currentPatient) return;
