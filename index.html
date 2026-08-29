@@ -32,7 +32,7 @@
       --greenTint: #E1EFE6;
       --greenDark: #204E37;
       --font-display: 'Fraunces', Georgia, serif;
-      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
     }
 
@@ -46,6 +46,7 @@
     .flex-col { flex-direction: column; }
     .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
     .flex-wrap { flex-wrap: wrap; }
     .grid { display: grid; }
     .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
@@ -55,6 +56,7 @@
 
     @media (min-width: 768px) {
       .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
 
@@ -67,22 +69,35 @@
     .btn-amber { background-color: var(--amber); color: #FFF; }
     .btn-outline { border: 1px solid var(--line); color: var(--inkSoft); background: var(--paperCard); }
 
+    .input-group { display: flex; flex-direction: column; gap: 0.25rem; }
+    .input-label { font-size: 0.75rem; font-weight: 600; color: var(--inkSoft); }
     .form-control { border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; outline: none; background-color: var(--paperCard); color: var(--ink); }
 
     .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
     .badge-dot { width: 7px; height: 7px; border-radius: 999px; }
     .badge-amber { background: var(--amberTint); color: var(--amberDark); }
     .badge-amber .badge-dot { background: var(--amber); }
-    .badge-green { background: var(--greenTint); color: var(--greenDark); }
-    .badge-green .badge-dot { background: var(--green); }
+    .badge-green { background: var(--greenTint); color: var(--pine); }
+    .badge-green .badge-dot { background: var(--pine); }
 
     .info-row { display: flex; flex-direction: column; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
     .info-row:last-child { border-bottom: none; }
     .info-label { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; color: var(--inkFaint); }
     .info-value { font-size: 0.875rem; color: var(--ink); font-weight: 500; }
 
-    .tab-btn { padding: 0.625rem 1rem; font-size: 0.875rem; font-weight: 600; color: var(--inkFaint); border-bottom: 2px solid transparent; cursor: pointer; }
+    .tab-btn { padding: 0.625rem 1rem; font-size: 0.875rem; font-weight: 600; color: var(--inkFaint); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
     .tab-btn.active { color: var(--pine); border-bottom-color: var(--pine); }
+
+    .qa-card { background: #FAFBF9; border: 1px solid var(--line); border-radius: 0.75rem; padding: 0.875rem 1rem; margin-bottom: 0.625rem; }
+    .qa-question { font-size: 0.75rem; font-weight: 700; color: var(--pineDark); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.03em; }
+    .qa-answer { font-size: 0.875rem; color: var(--ink); white-space: pre-wrap; font-weight: 500; }
+
+    .modal-overlay { position: fixed; inset: 0; z-index: 50; background-color: rgba(22, 48, 43, 0.5); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-content { background-color: var(--paper); border: 1px solid var(--line); border-radius: 1rem; width: 100%; max-width: 38rem; max-height: 90vh; overflow-y: auto; }
+    .modal-content.wide { max-width: 54rem; }
+    .modal-header { position: sticky; top: 0; background-color: var(--paper); border-bottom: 1px solid var(--line); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+
+    .meal-row { background: #FFFFFF; border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 0.5rem; }
 
     tr.patient-row { cursor: pointer; transition: background 0.15s; }
     tr.patient-row:hover { background-color: #FAFBF9; }
@@ -90,13 +105,14 @@
 </head>
 <body>
 
+  <!-- TOPO -->
   <header style="position: sticky; top:0; z-index: 40; background: var(--paperCard); border-bottom: 1px solid var(--line); padding: 0.75rem 1.5rem;">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3" onclick="window.backToDashboard()" style="cursor: pointer;">
         <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--pine); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">🚴</div>
         <div>
           <span style="font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; color: var(--ink);">Raiz &amp; Performance</span>
-          <p style="font-size: 0.75rem; color: var(--inkFaint);">Gestão Clínica &amp; Prontuário Nutricional</p>
+          <p style="font-size: 0.75rem; color: var(--inkFaint);">Gestão Clínica &amp; Prontuário Integrado</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -116,7 +132,7 @@
           <span style="font-size: 1.5rem;">👥</span>
         </div>
         <div class="card flex justify-between items-center">
-          <div><span style="font-size: 0.75rem; font-weight: 600; color: var(--inkSoft);">Devolutivas em Vídeo</span><div id="metricVideos" style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; color: var(--amberDark);">0</div></div>
+          <div><span style="font-size: 0.75rem; font-weight: 600; color: var(--inkSoft);">Devolutivas em Vídeo (48h)</span><div id="metricVideos" style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; color: var(--amberDark);">0</div></div>
           <span style="font-size: 1.5rem;">📹</span>
         </div>
         <div class="card flex justify-between items-center">
@@ -134,7 +150,10 @@
           <button class="btn btn-pine" onclick="window.setFilter('all', this)">Todos</button>
           <button class="btn btn-outline" onclick="window.setFilter('yellow', this)">🟡 Aguardando Gravação de Vídeo</button>
         </div>
-        <input type="text" id="inputSearch" oninput="window.renderDashboard()" placeholder="Buscar paciente..." class="form-control" style="width: 220px;">
+        <div class="flex gap-2">
+          <input type="text" id="inputSearch" oninput="window.renderDashboard()" placeholder="Buscar paciente..." class="form-control" style="width: 200px;">
+          <button onclick="window.openModal('modalAnamnese')" class="btn btn-pine">+ Novo Paciente</button>
+        </div>
       </div>
 
       <div class="card" style="padding: 0; overflow-x: auto;">
@@ -142,8 +161,8 @@
           <thead>
             <tr style="background: var(--paper); border-bottom: 1px solid var(--line); color: var(--inkFaint); font-size: 0.75rem; text-transform: uppercase;">
               <th style="padding: 10px 14px;">Paciente</th>
-              <th style="padding: 10px 14px;">Plano / Ciclo</th>
-              <th style="padding: 10px 14px;">Início</th>
+              <th style="padding: 10px 14px;">Plano</th>
+              <th style="padding: 10px 14px;">Data Início</th>
               <th style="padding: 10px 14px;">Status</th>
               <th style="padding: 10px 14px;">Próxima Ação</th>
               <th style="padding: 10px 14px; text-align: center;">Concluir [x]</th>
@@ -155,17 +174,27 @@
       </div>
     </section>
 
-    <!-- TELA 2: PRONTUÁRIO -->
+    <!-- TELA 2: PRONTUÁRIO COMPLETO -->
     <section id="viewDetail" class="hidden">
-      <div class="flex items-center justify-between" style="margin-bottom: 1rem;">
+      <div class="flex items-center justify-between flex-wrap gap-2" style="margin-bottom: 1rem;">
         <button onclick="window.backToDashboard()" class="btn btn-outline">← Voltar ao Painel</button>
-        <a id="btnWhatsDetail" href="#" target="_blank" class="btn btn-pine">💬 WhatsApp</a>
+        <div class="flex gap-2 flex-wrap">
+          <a id="btnWhatsDetail" href="#" target="_blank" class="btn btn-pine">💬 WhatsApp</a>
+          <button onclick="window.openModal('modalQuinzenal')" class="btn btn-pine">+ Quinzenal</button>
+          <button onclick="window.openModal('modalMensal')" class="btn btn-amber">+ Mensal</button>
+          <button onclick="window.openModal('modalKcal')" class="btn btn-pine">+ Prescrever Plano (Kcal &amp; Macros)</button>
+        </div>
       </div>
 
+      <!-- Cabeçalho do Paciente -->
       <div class="card flex items-start justify-between flex-wrap gap-4" style="margin-bottom: 1.5rem;">
         <div>
           <h2 id="detNome" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--ink);"></h2>
           <p id="detSub" style="font-size: 0.875rem; color: var(--inkSoft);"></p>
+          <div style="margin-top: 0.5rem;" class="flex items-center gap-2">
+            <span id="detPlanoBadge" class="badge badge-amber"></span>
+            <span id="detStageText" style="font-size: 0.75rem; color: var(--inkFaint); font-weight: 600;"></span>
+          </div>
         </div>
         <div class="flex gap-3">
           <div style="background: var(--pineTint); padding: 0.5rem 1rem; border-radius: 0.75rem; text-align: center;">
@@ -175,35 +204,193 @@
         </div>
       </div>
 
-      <div class="flex gap-2" style="border-bottom: 1px solid var(--line); margin-bottom: 1.5rem;">
-        <button class="tab-btn active" onclick="window.switchTab('tabAnamnese', this)">Ficha &amp; Anamnese</button>
-        <button class="tab-btn" onclick="window.switchTab('tabAcompanhamentos', this)">Respostas dos Formulários</button>
-        <button class="tab-btn" onclick="window.switchTab('tabComparador', this)">Gráfico de Peso</button>
+      <!-- Abas de Navegação -->
+      <div class="flex gap-2" style="border-bottom: 1px solid var(--line); margin-bottom: 1.5rem; overflow-x: auto;">
+        <button class="tab-btn active" onclick="window.switchTab('tabAnamnese', this)">📋 Ficha &amp; Anamnese</button>
+        <button class="tab-btn" onclick="window.switchTab('tabQuinzenais', this)">⏱️ Check-ins Quinzenais</button>
+        <button class="tab-btn" onclick="window.switchTab('tabMensais', this)">📊 Reavaliações Mensais</button>
+        <button class="tab-btn" onclick="window.switchTab('tabKcal', this)">🥗 Plano de Kcal &amp; Macros</button>
+        <button class="tab-btn" onclick="window.switchTab('tabComparador', this)">📈 Evolução &amp; Gráficos</button>
       </div>
 
+      <!-- Aba 1: Anamnese -->
       <div id="tabAnamnese" class="tab-pane">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Dados</h4><div id="infoDados"></div></div>
-          <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Objetivo &amp; Treino</h4><div id="infoSaude"></div></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom: 1rem;">
+          <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Dados Cadastrais</h4><div id="infoDados"></div></div>
+          <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Resumo Clínico</h4><div id="infoSaude"></div></div>
         </div>
-      </div>
-
-      <div id="tabAcompanhamentos" class="tab-pane hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.5rem;">Check-ins Quinzenais</h4><div id="listQuinzenal" class="flex flex-col gap-3"></div></div>
-          <div><h4 style="color: var(--amberDark); font-size: 0.875rem; margin-bottom: 0.5rem;">Reavaliações Mensais</h4><div id="listMensal" class="flex flex-col gap-3"></div></div>
-        </div>
-      </div>
-
-      <div id="tabComparador" class="tab-pane hidden">
         <div class="card">
-          <h4 style="font-size: 0.875rem; color: var(--inkSoft); margin-bottom: 1rem;">Evolução de Peso (kg)</h4>
+          <h4 style="color: var(--pineDark); font-size: 0.875rem; margin-bottom: 0.75rem;">Respostas Completas da Anamnese Inicial</h4>
+          <div id="containerAnamnesePerguntas"></div>
+        </div>
+      </div>
+
+      <!-- Aba 2: Quinzenais -->
+      <div id="tabQuinzenais" class="tab-pane hidden">
+        <div id="containerQuinzenaisPerguntas"></div>
+      </div>
+
+      <!-- Aba 3: Mensais -->
+      <div id="tabMensais" class="tab-pane hidden">
+        <div id="containerMensaisPerguntas"></div>
+      </div>
+
+      <!-- Aba 4: Kcal e Macros Manuais -->
+      <div id="tabKcal" class="tab-pane hidden">
+        <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
+          <div>
+            <h3 style="font-family: var(--font-display); font-size: 1.125rem;">Prescrições &amp; Planejamento Nutricional</h3>
+            <p style="font-size: 0.75rem; color: var(--inkFaint);">Cálculos e divisões manuais definidas por você para este paciente.</p>
+          </div>
+          <button onclick="window.openModal('modalKcal')" class="btn btn-pine">+ Novo Plano</button>
+        </div>
+        <div id="listKcalPlans" class="flex flex-col gap-4"></div>
+      </div>
+
+      <!-- Aba 5: Comparador & Gráficos -->
+      <div id="tabComparador" class="tab-pane hidden">
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h4 style="font-size: 0.875rem; color: var(--inkSoft); margin-bottom: 1rem;">Curva de Evolução do Peso Corporal (kg)</h4>
           <div style="height: 280px; width: 100%;"><canvas id="chartEvolucao"></canvas></div>
+        </div>
+        <div class="card">
+          <h4 style="font-size: 0.875rem; color: var(--pineDark); margin-bottom: 0.75rem;">Histórico Cronológico Consolidado</h4>
+          <div id="tableHistoricoConsolidado"></div>
         </div>
       </div>
     </section>
 
   </main>
+
+  <!-- MODAIS DE CADASTRO E EDIÇÃO -->
+  <div id="modalContainer" class="modal-overlay hidden">
+    
+    <!-- Modal: Anamnese -->
+    <div id="modalAnamnese" class="modal-content wide hidden">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-display);">Cadastro de Paciente</h3>
+        <button onclick="window.closeModal()" style="font-size: 1.5rem;">&times;</button>
+      </div>
+      <form id="formAnamnese" style="padding: 1.5rem;" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="input-group"><label class="input-label">Nome Completo</label><input type="text" id="ana_nome" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">E-mail</label><input type="email" id="ana_email" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">WhatsApp</label><input type="text" id="ana_whatsapp" class="form-control" required></div>
+          <div class="input-group">
+            <label class="input-label">Plano</label>
+            <select id="ana_plano" class="form-control">
+              <option value="Mensal Start">Mensal Start</option>
+              <option value="Trimestral Foco">Trimestral Foco</option>
+              <option value="Semestral Híbrido">Semestral Híbrido</option>
+              <option value="Anual Performance">Anual Performance</option>
+            </select>
+          </div>
+          <div class="input-group"><label class="input-label">Data de Início</label><input type="date" id="ana_dataInicio" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">Peso Inicial (kg)</label><input type="number" step="0.1" id="ana_pesoInicial" class="form-control" value="70"></div>
+        </div>
+        <div class="input-group"><label class="input-label">Objetivo Principal</label><input type="text" id="ana_objetivo" class="form-control" placeholder="Ex: Hipertrofia, Rendimento no Ciclismo"></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="window.closeModal()" class="btn btn-outline">Cancelar</button><button type="submit" class="btn btn-pine">Salvar Paciente</button></div>
+      </form>
+    </div>
+
+    <!-- Modal: Quinzenal -->
+    <div id="modalQuinzenal" class="modal-content hidden">
+      <div class="modal-header"><h3 style="font-family: var(--font-display);">Check-in Quinzenal</h3><button onclick="window.closeModal()" style="font-size: 1.5rem;">&times;</button></div>
+      <form id="formQuinzenal" style="padding: 1.5rem;" class="flex flex-col gap-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="input-group"><label class="input-label">Data</label><input type="date" id="qui_data" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">Peso Atual (kg)</label><input type="number" step="0.1" id="qui_peso" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">Adesão (1-5)</label><input type="range" min="1" max="5" id="qui_adesao" value="4" class="form-control"></div>
+          <div class="input-group"><label class="input-label">Estresse (1-10)</label><input type="range" min="1" max="10" id="qui_estresse" value="5" class="form-control"></div>
+        </div>
+        <div class="input-group"><label class="input-label">Relato / Sintomas</label><textarea id="qui_notas" rows="2" class="form-control"></textarea></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="window.closeModal()" class="btn btn-outline">Cancelar</button><button type="submit" class="btn btn-pine">Salvar</button></div>
+      </form>
+    </div>
+
+    <!-- Modal: Mensal -->
+    <div id="modalMensal" class="modal-content hidden">
+      <div class="modal-header"><h3 style="font-family: var(--font-display);">Reavaliação Mensal</h3><button onclick="window.closeModal()" style="font-size: 1.5rem;">&times;</button></div>
+      <form id="formMensal" style="padding: 1.5rem;" class="flex flex-col gap-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="input-group"><label class="input-label">Data</label><input type="date" id="men_data" class="form-control" required></div>
+          <div class="input-group"><label class="input-label">Peso em Jejum (kg)</label><input type="number" step="0.1" id="men_peso" class="form-control" required></div>
+        </div>
+        <div class="input-group"><label class="input-label">Evolução Geral</label><input type="text" id="men_evolucao" class="form-control"></div>
+        <div class="input-group"><label class="input-label">Meta para Próximo Mês</label><textarea id="men_meta" rows="2" class="form-control"></textarea></div>
+        <div class="flex justify-end gap-2"><button type="button" onclick="window.closeModal()" class="btn btn-outline">Cancelar</button><button type="submit" class="btn btn-amber">Salvar</button></div>
+      </form>
+    </div>
+
+    <!-- Modal: NOVO PLANO NUTRICIONAL / KCAL & MACROS MANUAIS -->
+    <div id="modalKcal" class="modal-content wide hidden">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-display);">Prescrição Nutricional Personalizada</h3>
+        <button onclick="window.closeModal()" style="font-size: 1.5rem;">&times;</button>
+      </div>
+      <form id="formKcal" style="padding: 1.5rem;" class="flex flex-col gap-4">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="input-group">
+            <label class="input-label">Data de Início do Plano</label>
+            <input type="date" id="kc_data" class="form-control" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Estratégia / Fase</label>
+            <input type="text" id="kc_estrategia" class="form-control" placeholder="Ex: Déficit Calórico Controlado" value="Manutenção &amp; Performance" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Meta Calórica Total (kcal/dia)</label>
+            <input type="number" id="kc_meta" value="2300" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- Macronutrientes Manuais (g e g/kg) -->
+        <div class="card" style="background: var(--paper); border: 1px solid var(--line);">
+          <h4 style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--pineDark); margin-bottom: 0.5rem;">Distribuição de Macronutrientes (Cálculo Manual)</h4>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div class="input-group">
+              <label class="input-label">Proteína (g e g/kg)</label>
+              <input type="text" id="kc_prot" class="form-control" placeholder="Ex: 160g (2.0 g/kg)" value="160g (2.0 g/kg)">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Carboidrato (g e g/kg)</label>
+              <input type="text" id="kc_carb" class="form-control" placeholder="Ex: 280g (3.5 g/kg)" value="280g (3.5 g/kg)">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Gordura (g e g/kg)</label>
+              <input type="text" id="kc_gord" class="form-control" placeholder="Ex: 60g (0.8 g/kg)" value="60g (0.8 g/kg)">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Meta Hídrica (L/dia)</label>
+              <input type="text" id="kc_agua" class="form-control" placeholder="Ex: 3.5 Litros/dia" value="3.5 L/dia">
+            </div>
+          </div>
+        </div>
+
+        <!-- Divisão das Refeições -->
+        <div>
+          <div class="flex justify-between items-center" style="margin-bottom: 0.5rem;">
+            <label class="input-label" style="font-size: 0.8rem; color: var(--pineDark);">Distribuição por Refeição</label>
+            <button type="button" onclick="window.adicionarLinhaRefeicaoModal()" class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">+ Adicionar Refeição</button>
+          </div>
+          <div id="containerRefeicoesModal"></div>
+        </div>
+
+        <!-- Observações e Conduta -->
+        <div class="input-group">
+          <label class="input-label">Orientações &amp; Conduta Nutricional para o Paciente</label>
+          <textarea id="kc_obs" rows="2" class="form-control" placeholder="Ex: Foco no aporte de carboidratos pré e intra-treino. Hidratação reforçada."></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="window.closeModal()" class="btn btn-outline">Cancelar</button>
+          <button type="submit" class="btn btn-pine">Salvar Prescrição</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
 
   <script>
     const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyeVC1jOYTqJ9UpS1s8OlCBm6-er3tw7lh7Vk42gMJ1zGYBmBrEg1OeGNtgpjMQERy-/exec";
@@ -213,7 +400,15 @@
     let chartInstance = null;
     let currentFilter = "all";
 
-    // CARREGAMENTO DIRETO VIA JSONP (SEM BLOQUEIOS CORS)
+    // Refeições padrão para preenchimento rápido
+    let modalRefeicoesTemp = [
+      { nome: "Café da Manhã", horario: "07:00", kcal: "400", desc: "Ovos mexidos, pão integral e fruta" },
+      { nome: "Almoço", horario: "12:30", kcal: "700", desc: "Arroz, feijão, frango grelhado e vegetais" },
+      { nome: "Lanche da Tarde / Pré-treino", horario: "16:00", kcal: "450", desc: "Iogurte, aveia, banana e mel" },
+      { nome: "Jantar / Pós-treino", horario: "20:00", kcal: "650", desc: "Batata doce, carne magra e salada verde" },
+      { nome: "Ceia", horario: "22:30", kcal: "100", desc: "Chá de camomila e castanhas" }
+    ];
+
     window.loadPatients = function() {
       const tbody = document.getElementById("tablePatientsBody");
       tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--pine);">⏳ Carregando respostas da planilha...</td></tr>`;
@@ -224,21 +419,11 @@
       const script = document.createElement("script");
       script.id = "jsonp_script";
       script.src = `${GOOGLE_APPS_SCRIPT_URL}?callback=onDadosPlanilhaRecebidos&t=${Date.now()}`;
-      script.onerror = function() {
-        tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--red);">Erro ao conectar com a planilha. Verifique se o Apps Script foi implantado como 'Qualquer pessoa'.</td></tr>`;
-      };
       document.body.appendChild(script);
     };
 
     window.onDadosPlanilhaRecebidos = function(data) {
-      if (Array.isArray(data)) {
-        patients = data;
-      } else if (data && data.erro) {
-        alert("Erro na planilha: " + data.erro);
-        patients = [];
-      } else {
-        patients = [];
-      }
+      patients = Array.isArray(data) ? data : [];
       window.renderDashboard();
     };
 
@@ -255,16 +440,16 @@
       document.getElementById("metricTotal").innerText = patients.length;
       document.getElementById("metricVideos").innerText = patients.filter(p => p.nextAction.includes("Vídeo")).length;
       document.getElementById("metricCalls").innerText = patients.filter(p => p.nextAction.includes("Consulta")).length;
-      
+
       let totalForms = 0;
-      patients.forEach(p => { totalForms += (p.quinzenal?.length || 0) + (p.mensal?.length || 0); });
+      patients.forEach(p => { totalForms += (p.quinzenais?.length || 0) + (p.mensais?.length || 0) + (p.anamnesePerguntas?.length ? 1 : 0); });
       document.getElementById("metricForms").innerText = totalForms;
 
       const tbody = document.getElementById("tablePatientsBody");
       tbody.innerHTML = "";
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--inkFaint);">Nenhum paciente encontrado na planilha.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--inkFaint);">Nenhum paciente encontrado.</td></tr>`;
         return;
       }
 
@@ -277,9 +462,7 @@
             <div style="font-weight: 700; color: var(--ink);">${p.nome}</div>
             <div style="font-size: 0.75rem; color: var(--inkFaint);">${p.email}</div>
           </td>
-          <td style="padding: 12px 14px;" onclick="window.openDetail('${p.id}')">
-            <span style="font-size: 0.75rem; font-weight: 600; color: var(--pine);">${p.plano}</span>
-          </td>
+          <td style="padding: 12px 14px;" onclick="window.openDetail('${p.id}')"><span style="font-size: 0.75rem; font-weight: 600; color: var(--pine);">${p.plano}</span></td>
           <td style="padding: 12px 14px; font-size: 0.75rem; color: var(--inkSoft);" onclick="window.openDetail('${p.id}')">${p.dataInicio.split('-').reverse().join('/')}</td>
           <td style="padding: 12px 14px;" onclick="window.openDetail('${p.id}')"><span class="badge badge-amber"><span class="badge-dot"></span>Respondido</span></td>
           <td style="padding: 12px 14px; font-size: 0.75rem; color: var(--inkSoft);" onclick="window.openDetail('${p.id}')">${p.nextAction}</td>
@@ -303,6 +486,7 @@
 
       document.getElementById("detNome").innerText = currentPatient.nome;
       document.getElementById("detSub").innerText = currentPatient.email;
+      document.getElementById("detPlanoBadge").innerText = currentPatient.plano;
       document.getElementById("btnWhatsDetail").href = `https://wa.me/55${currentPatient.whatsapp.replace(/\D/g, '')}`;
 
       const dDados = document.getElementById("infoDados"); dDados.innerHTML = "";
@@ -311,31 +495,63 @@
       addInfo(dDados, "Data de Entrada", currentPatient.dataInicio.split('-').reverse().join('/'));
 
       const dSaude = document.getElementById("infoSaude"); dSaude.innerHTML = "";
-      addInfo(dSaude, "Objetivo", currentPatient.anamnese?.objetivo || "—");
-      addInfo(dSaude, "Peso Inicial", `${currentPatient.anamnese?.pesoInicial || '—'} kg`);
-      addInfo(dSaude, "Treino", currentPatient.anamnese?.treino || "Musculação");
+      addInfo(dSaude, "Plano Contratado", currentPatient.plano);
+      addInfo(dSaude, "Status Atual", currentPatient.status);
+      addInfo(dSaude, "Próxima Ação", currentPatient.nextAction);
 
-      const qList = document.getElementById("listQuinzenal"); qList.innerHTML = "";
-      (currentPatient.quinzenal || []).forEach(q => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<div class="flex justify-between"><b>${q.data.split('-').reverse().join('/')}</b><span class="badge badge-green">${q.peso} kg</span></div><p style="font-size:0.75rem; margin-top:4px;">${q.notas}</p>`;
-        qList.appendChild(card);
-      });
+      // 1. Anamnese
+      const cAna = document.getElementById("containerAnamnesePerguntas");
+      cAna.innerHTML = "";
+      if (currentPatient.anamnesePerguntas && currentPatient.anamnesePerguntas.length > 0) {
+        currentPatient.anamnesePerguntas.forEach(item => {
+          cAna.innerHTML += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
+        });
+      } else {
+        cAna.innerHTML = `<p style="color:var(--inkFaint); padding:0.5rem;">Nenhuma anamnese registrada.</p>`;
+      }
 
-      const mList = document.getElementById("listMensal"); mList.innerHTML = "";
-      (currentPatient.mensal || []).forEach(m => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<div class="flex justify-between"><b>${m.data.split('-').reverse().join('/')}</b><span class="badge badge-amber">${m.peso} kg</span></div><p style="font-size:0.75rem; margin-top:4px;">${m.evolucao}</p>`;
-        mList.appendChild(card);
-      });
+      // 2. Quinzenais
+      const cQui = document.getElementById("containerQuinzenaisPerguntas");
+      cQui.innerHTML = "";
+      if (currentPatient.quinzenais && currentPatient.quinzenais.length > 0) {
+        currentPatient.quinzenais.forEach((q, idx) => {
+          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--pine);">Check-in #${idx+1} (${q.data.split('-').reverse().join('/')})</h4><span class="badge badge-green">${q.peso} kg</span></div>`;
+          q.respostas.forEach(item => {
+            cardHtml += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
+          });
+          cardHtml += `</div>`;
+          cQui.innerHTML += cardHtml;
+        });
+      } else {
+        cQui.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhum check-in quinzenal enviado ainda.</p>`;
+      }
 
-      const todos = [...(currentPatient.quinzenal || []), ...(currentPatient.mensal || [])];
-      const ultimo = todos.length > 0 ? todos[todos.length - 1].peso : currentPatient.anamnese?.pesoInicial;
-      document.getElementById("detUltimoPeso").innerText = `${ultimo} kg`;
+      // 3. Mensais
+      const cMen = document.getElementById("containerMensaisPerguntas");
+      cMen.innerHTML = "";
+      if (currentPatient.mensais && currentPatient.mensais.length > 0) {
+        currentPatient.mensais.forEach((m, idx) => {
+          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--amberDark);">Reavaliação Mensal #${idx+1} (${m.data.split('-').reverse().join('/')})</h4><span class="badge badge-amber">${m.peso} kg</span></div>`;
+          m.respostas.forEach(item => {
+            cardHtml += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
+          });
+          cardHtml += `</div>`;
+          cMen.innerHTML += cardHtml;
+        });
+      } else {
+        cMen.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhuma reavaliação mensal enviada ainda.</p>`;
+      }
+
+      // 4. Kcal & Macros
+      renderKcalView();
+
+      // 5. Peso Recente
+      const todos = [...(currentPatient.quinzenais || []), ...(currentPatient.mensais || [])];
+      const ultimoPeso = todos.length > 0 ? todos[todos.length - 1].peso : (currentPatient.pesoInicial || 70);
+      document.getElementById("detUltimoPeso").innerText = ultimoPeso ? `${ultimoPeso} kg` : "—";
 
       window.renderChart();
+      renderHistoricoConsolidado();
     };
 
     function addInfo(container, label, val) {
@@ -345,13 +561,137 @@
       container.appendChild(row);
     }
 
+    // RENDERIZAÇÃO DA ABA DE KCAL & MACROS MANUAIS
+    function renderKcalView() {
+      const cont = document.getElementById("listKcalPlans");
+      cont.innerHTML = "";
+
+      const plans = currentPatient.kcalPlans || [
+        {
+          data: currentPatient.dataInicio,
+          estrategia: "Ajuste Inicial & Rendimento",
+          kcalMeta: 2300,
+          prot: "160g (2.0 g/kg)",
+          carb: "280g (3.5 g/kg)",
+          gord: "60g (0.8 g/kg)",
+          agua: "3.5 L/dia",
+          obs: "Distribuir carboidratos nas refeições ao redor do treino.",
+          refeicoes: modalRefeicoesTemp
+        }
+      ];
+
+      plans.forEach(k => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="flex justify-between items-center flex-wrap gap-2" style="margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px;">
+            <div>
+              <b style="font-family: var(--font-display); font-size: 1.1rem; color: var(--ink);">${k.estrategia}</b>
+              <span style="font-size: 0.75rem; color: var(--inkFaint); margin-left: 8px;">Início: ${k.data.split('-').reverse().join('/')}</span>
+            </div>
+            <span class="badge badge-green" style="font-size: 0.85rem; font-family: var(--font-mono);">${k.kcalMeta} kcal / dia</span>
+          </div>
+
+          <!-- Grade de Macros Definidos Manualmente -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2" style="margin-bottom: 12px;">
+            <div style="background: var(--pineTint); padding: 8px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 10px; font-weight: 700; color: var(--pineDark); text-transform: uppercase; display: block;">Proteínas</span>
+              <b style="font-size: 0.85rem; color: var(--pineDark); font-family: var(--font-mono);">${k.prot || '—'}</b>
+            </div>
+            <div style="background: var(--amberTint); padding: 8px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 10px; font-weight: 700; color: var(--amberDark); text-transform: uppercase; display: block;">Carboidratos</span>
+              <b style="font-size: 0.85rem; color: var(--amberDark); font-family: var(--font-mono);">${k.carb || '—'}</b>
+            </div>
+            <div style="background: #F4ECE1; padding: 8px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 10px; font-weight: 700; color: #6D4C41; text-transform: uppercase; display: block;">Gorduras</span>
+              <b style="font-size: 0.85rem; color: #6D4C41; font-family: var(--font-mono);">${k.gord || '—'}</b>
+            </div>
+            <div style="background: #E1EFF4; padding: 8px; border-radius: 8px; text-align: center;">
+              <span style="font-size: 10px; font-weight: 700; color: #0277BD; text-transform: uppercase; display: block;">Água Diária</span>
+              <b style="font-size: 0.85rem; color: #0277BD; font-family: var(--font-mono);">${k.agua || '3.5 L'}</b>
+            </div>
+          </div>
+
+          <!-- Tabela de Refeições -->
+          <div style="margin-bottom: 10px;">
+            <h5 style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--pineDark); margin-bottom: 6px;">Divisão do Menu &amp; Horários</h5>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              ${(k.refeicoes || []).map(r => `
+                <div style="background: #FAFBF9; border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                  <div>
+                    <span style="font-weight: 700; font-size: 0.85rem; color: var(--ink);">${r.nome}</span>
+                    <span style="font-size: 0.75rem; color: var(--inkFaint); margin-left: 6px;">⏰ ${r.horario}</span>
+                    <p style="font-size: 0.75rem; color: var(--inkSoft); margin-top: 2px;">${r.desc || 'Conforme orientação verbal'}</p>
+                  </div>
+                  <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--pine);">${r.kcal} kcal</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          ${k.obs ? `<div style="font-size: 0.75rem; color: var(--inkSoft); background: #FFFFFF; border-left: 3px solid var(--pine); padding: 6px 10px; border-radius: 4px;"><b>Orientações Clínicas:</b> ${k.obs}</div>` : ''}
+        `;
+        cont.appendChild(card);
+      });
+    }
+
+    // MONTA AS LINHAS DINÂMICAS DE REFEIÇÃO NO MODAL
+    window.renderModalRefeicoesInputs = function() {
+      const container = document.getElementById("containerRefeicoesModal");
+      if (!container) return;
+      container.innerHTML = "";
+
+      modalRefeicoesTemp.forEach((r, idx) => {
+        const div = document.createElement("div");
+        div.className = "meal-row";
+        div.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2" style="margin-bottom: 4px;">
+            <input type="text" value="${r.nome}" placeholder="Nome da Refeição" onchange="modalRefeicoesTemp[${idx}].nome = this.value" class="form-control" style="font-size: 0.8rem; padding: 4px 8px;">
+            <input type="text" value="${r.horario}" placeholder="Horário (ex: 08:00)" onchange="modalRefeicoesTemp[${idx}].horario = this.value" class="form-control" style="font-size: 0.8rem; padding: 4px 8px;">
+            <div class="flex gap-1">
+              <input type="text" value="${r.kcal}" placeholder="Kcal" onchange="modalRefeicoesTemp[${idx}].kcal = this.value" class="form-control" style="font-size: 0.8rem; padding: 4px 8px;">
+              <button type="button" onclick="window.removerLinhaRefeicaoModal(${idx})" style="color: var(--red); padding: 0 4px;" title="Remover">🗑️</button>
+            </div>
+          </div>
+          <input type="text" value="${r.desc || ''}" placeholder="Alimentos / Sugestão de cardápio" onchange="modalRefeicoesTemp[${idx}].desc = this.value" class="form-control" style="font-size: 0.75rem; padding: 4px 8px;">
+        `;
+        container.appendChild(div);
+      });
+    };
+
+    window.adicionarLinhaRefeicaoModal = function() {
+      modalRefeicoesTemp.push({ nome: "Nova Refeição", horario: "12:00", kcal: "300", desc: "" });
+      window.renderModalRefeicoesInputs();
+    };
+
+    window.removerLinhaRefeicaoModal = function(index) {
+      modalRefeicoesTemp.splice(index, 1);
+      window.renderModalRefeicoesInputs();
+    };
+
+    function renderHistoricoConsolidado() {
+      const cont = document.getElementById("tableHistoricoConsolidado");
+      cont.innerHTML = "";
+      const evs = [];
+      if (currentPatient.pesoInicial) evs.push({ tipo: "Inicial / Anamnese", data: currentPatient.dataInicio, peso: currentPatient.pesoInicial });
+      (currentPatient.quinzenais || []).forEach(q => evs.push({ tipo: "Check-in Quinzenal", data: q.data, peso: q.peso }));
+      (currentPatient.mensais || []).forEach(m => evs.push({ tipo: "Reavaliação Mensal", data: m.data, peso: m.peso }));
+
+      evs.forEach(e => {
+        const item = document.createElement("div");
+        item.style.cssText = "display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:0.875rem;";
+        item.innerHTML = `<span><b>${e.tipo}</b> (${e.data.split('-').reverse().join('/')})</span><span style="font-family:var(--font-mono); font-weight:700; color:var(--pine);">${e.peso} kg</span>`;
+        cont.appendChild(item);
+      });
+    }
+
     window.renderChart = function() {
       const evs = [];
-      if (currentPatient.anamnese?.pesoInicial) {
-        evs.push({ label: "Inicial", peso: currentPatient.anamnese.pesoInicial });
+      if (currentPatient.pesoInicial) {
+        evs.push({ label: "Inicial", peso: currentPatient.pesoInicial });
       }
-      (currentPatient.quinzenal || []).forEach(q => evs.push({ label: q.data.split('-').reverse().join('/'), peso: q.peso }));
-      (currentPatient.mensal || []).forEach(m => evs.push({ label: m.data.split('-').reverse().join('/'), peso: m.peso }));
+      (currentPatient.quinzenais || []).forEach(q => evs.push({ label: q.data.split('-').reverse().join('/'), peso: q.peso }));
+      (currentPatient.mensais || []).forEach(m => evs.push({ label: m.data.split('-').reverse().join('/'), peso: m.peso }));
 
       const ctx = document.getElementById("chartEvolucao")?.getContext("2d");
       if (!ctx) return;
@@ -388,7 +728,7 @@
           dataVencimento: new Date().toISOString().slice(0, 10)
         })
       });
-      alert(`✅ Etapa concluída! Evento criado no Google Agenda para ${p.nome}`);
+      alert(`✅ Etapa concluída! Evento agendado no Google Agenda para ${p.nome}`);
     };
 
     window.backToDashboard = function() {
@@ -410,8 +750,81 @@
       document.getElementById(tabId).classList.remove("hidden");
     };
 
+    window.openModal = function(id) {
+      document.getElementById("modalContainer").classList.remove("hidden");
+      document.querySelectorAll(".modal-content").forEach(m => m.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+
+      if (id === "modalKcal") {
+        document.getElementById("kc_data").value = new Date().toISOString().slice(0, 10);
+        window.renderModalRefeicoesInputs();
+      }
+    };
+
+    window.closeModal = function() {
+      document.getElementById("modalContainer").classList.add("hidden");
+    };
+
     document.addEventListener("DOMContentLoaded", () => {
       window.loadPatients();
+
+      // Submit Quinzenal Manual
+      document.getElementById("formQuinzenal")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!currentPatient) return;
+        currentPatient.quinzenais = currentPatient.quinzenais || [];
+        currentPatient.quinzenais.push({
+          data: document.getElementById("qui_data").value,
+          peso: Number(document.getElementById("qui_peso").value),
+          respostas: [
+            { pergunta: "Adesão às refeições", resposta: `${document.getElementById("qui_adesao").value}/5` },
+            { pergunta: "Nível de Estresse", resposta: `${document.getElementById("qui_estresse").value}/10` },
+            { pergunta: "Relato / Observações", resposta: document.getElementById("qui_notas").value }
+          ]
+        });
+        window.closeModal();
+        window.openDetail(currentPatient.id);
+      });
+
+      // Submit Mensal Manual
+      document.getElementById("formMensal")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!currentPatient) return;
+        currentPatient.mensais = currentPatient.mensais || [];
+        currentPatient.mensais.push({
+          data: document.getElementById("men_data").value,
+          peso: Number(document.getElementById("men_peso").value),
+          respostas: [
+            { pergunta: "Evolução Geral", resposta: document.getElementById("men_evolucao").value },
+            { pergunta: "Meta para o próximo mês", resposta: document.getElementById("men_meta").value }
+          ]
+        });
+        window.closeModal();
+        window.openDetail(currentPatient.id);
+      });
+
+      // Submit Prescrição Manual (Kcal & Macros)
+      document.getElementById("formKcal")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!currentPatient) return;
+        currentPatient.kcalPlans = currentPatient.kcalPlans || [];
+        
+        const novoPlano = {
+          data: document.getElementById("kc_data").value,
+          estrategia: document.getElementById("kc_estrategia").value,
+          kcalMeta: Number(document.getElementById("kc_meta").value),
+          prot: document.getElementById("kc_prot").value,
+          carb: document.getElementById("kc_carb").value,
+          gord: document.getElementById("kc_gord").value,
+          agua: document.getElementById("kc_agua").value,
+          obs: document.getElementById("kc_obs").value,
+          refeicoes: JSON.parse(JSON.stringify(modalRefeicoesTemp))
+        };
+
+        currentPatient.kcalPlans.unshift(novoPlano);
+        window.closeModal();
+        renderKcalView();
+      });
     });
   </script>
 </body>
