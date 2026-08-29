@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-  
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -94,7 +93,7 @@
     .tab-btn.active { color: var(--pine); border-bottom-color: var(--pine); }
 
     .qa-card { background: #FAFBF9; border: 1px solid var(--line); border-radius: 0.75rem; padding: 0.875rem 1rem; margin-bottom: 0.625rem; }
-    .qa-question { font-size: 0.75rem; font-weight: 700; color: var(--pineDark); text-transform: uppercase; margin-bottom: 0.25rem; }
+    .qa-question { font-size: 0.75rem; font-weight: 700; color: var(--pineDark); text-transform: uppercase; margin-bottom: 0.25rem; letter-spacing: 0.02em; }
     .qa-answer { font-size: 0.875rem; color: var(--ink); white-space: pre-wrap; font-weight: 500; }
 
     .modal-overlay { position: fixed; inset: 0; z-index: 50; background-color: rgba(22, 48, 43, 0.5); display: flex; align-items: center; justify-content: center; padding: 1rem; }
@@ -115,7 +114,7 @@
         <div style="width: 34px; height: 34px; border-radius: 8px; background: var(--pine); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">🚴</div>
         <div>
           <span style="font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; color: var(--ink);">Raiz &amp; Performance</span>
-          <p style="font-size: 0.75rem; color: var(--inkFaint);">Gestão Clínica &amp; Pipeline de Prazos</p>
+          <p style="font-size: 0.75rem; color: var(--inkFaint);">Gestão Clínica &amp; Pipeline de Formulários</p>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -129,8 +128,6 @@
     
     <!-- TELA 1: DASHBOARD & PIPELINE -->
     <section id="viewDashboard">
-      
-      <!-- CARDS DE MÉTRICAS -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-3" style="margin-bottom: 1.5rem;">
         <div class="card flex justify-between items-center">
           <div><span style="font-size: 0.75rem; font-weight: 600; color: var(--inkSoft);">Pacientes Ativos</span><div id="metricTotal" style="font-family: var(--font-display); font-size: 1.75rem; font-weight: 700;">0</div></div>
@@ -150,7 +147,6 @@
         </div>
       </div>
 
-      <!-- FILTROS E PESQUISA -->
       <div class="flex items-center justify-between flex-wrap gap-3" style="margin-bottom: 1rem;">
         <div class="flex gap-2 flex-wrap" id="filterPills">
           <button class="btn btn-pine" onclick="window.setFilter('all', this)">Todos</button>
@@ -164,7 +160,6 @@
         </div>
       </div>
 
-      <!-- TABELA CENTRAL DO PIPELINE -->
       <div class="card" style="padding: 0; overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse; font-size: 0.875rem; text-align: left; min-width: 1000px;">
           <thead>
@@ -183,7 +178,7 @@
       </div>
     </section>
 
-    <!-- TELA 2: PRONTUÁRIO COMPLETO -->
+    <!-- TELA 2: PRONTUÁRIO COMPLETO COM TODAS AS ABAS -->
     <section id="viewDetail" class="hidden">
       <div class="flex items-center justify-between flex-wrap gap-2" style="margin-bottom: 1rem;">
         <button onclick="window.backToDashboard()" class="btn btn-outline">← Voltar ao Painel</button>
@@ -216,21 +211,21 @@
 
       <!-- Abas de Navegação -->
       <div class="flex gap-2" style="border-bottom: 1px solid var(--line); margin-bottom: 1.5rem; overflow-x: auto;">
-        <button class="tab-btn active" onclick="window.switchTab('tabAnamnese', this)">📋 Ficha &amp; Anamnese</button>
-        <button class="tab-btn" onclick="window.switchTab('tabQuinzenais', this)">⏱️ Check-ins Quinzenais</button>
-        <button class="tab-btn" onclick="window.switchTab('tabMensais', this)">📊 Reavaliações Mensais</button>
+        <button class="tab-btn active" onclick="window.switchTab('tabAnamnese', this)">📋 FORMULÁRIO INICIAL</button>
+        <button class="tab-btn" onclick="window.switchTab('tabQuinzenais', this)">⏱️ Acompanhamento Quinzenal</button>
+        <button class="tab-btn" onclick="window.switchTab('tabMensais', this)">📊 Acompanhamento Mensal</button>
         <button class="tab-btn" onclick="window.switchTab('tabKcal', this)">🥗 Plano de Kcal &amp; Macros</button>
-        <button class="tab-btn" onclick="window.switchTab('tabComparador', this)">📈 Evolução &amp; Gráficos</button>
+        <button class="tab-btn" onclick="window.switchTab('tabComparador', this)">📈 Evolução de Peso</button>
       </div>
 
-      <!-- Aba 1: Anamnese -->
+      <!-- Aba 1: FORMULÁRIO INICIAL -->
       <div id="tabAnamnese" class="tab-pane">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" style="margin-bottom: 1rem;">
           <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Dados Cadastrais</h4><div id="infoDados"></div></div>
           <div class="card"><h4 style="color: var(--pine); font-size: 0.875rem; margin-bottom: 0.75rem;">Ciclo &amp; Planejamento</h4><div id="infoSaude"></div></div>
         </div>
         <div class="card">
-          <h4 style="color: var(--pineDark); font-size: 0.875rem; margin-bottom: 0.75rem;">Respostas Completas da Anamnese Inicial</h4>
+          <h4 style="color: var(--pineDark); font-size: 0.875rem; margin-bottom: 0.75rem;">Perguntas &amp; Respostas: FORMULÁRIO INICIAL</h4>
           <div id="containerAnamnesePerguntas"></div>
         </div>
       </div>
@@ -275,7 +270,7 @@
   <!-- MODAIS -->
   <div id="modalContainer" class="modal-overlay hidden">
     
-    <!-- MODAL: EDITAR PLANO & DATAS DO PACIENTE -->
+    <!-- MODAL: EDITAR PLANO & DATAS -->
     <div id="modalEditarPlano" class="modal-content hidden">
       <div class="modal-header">
         <h3 style="font-family: var(--font-display);">Editar Plano &amp; Dados</h3>
@@ -420,7 +415,6 @@
       mensal: "https://docs.google.com/forms/d/1J8djwQiZdN_EZ-go4x_RxvMORRR5m-TaWwBFuQuM3EU/viewform"
     };
 
-    // RÉGUA E CICLOS DE CADA PLANO
     const PLAN_CYCLES = {
       "Mensal Start": [
         { nome: "Check-in Quinzenal #1", tipo: "quinzenal", dias: 14 },
@@ -449,7 +443,6 @@
     let chartInstance = null;
     let currentFilter = "all";
 
-    // Memória local persistente para edições e checks concluídos
     function getStoredCustomData() {
       try { return JSON.parse(localStorage.getItem("raiz_patients_custom") || "{}"); } catch(e) { return {}; }
     }
@@ -467,7 +460,7 @@
 
     window.loadPatients = function() {
       const tbody = document.getElementById("tablePatientsBody");
-      tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--pine);">⏳ Carregando respostas e prazos...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--pine);">⏳ Carregando respostas e abas...</td></tr>`;
 
       const scriptAntigo = document.getElementById("jsonp_script");
       if (scriptAntigo) scriptAntigo.remove();
@@ -482,7 +475,6 @@
       const raw = Array.isArray(data) ? data : [];
       const customData = getStoredCustomData();
 
-      // Mescla com as customizações e edições salvas localmente
       patients = raw.map(p => {
         const custom = customData[p.id] || {};
         return {
@@ -523,7 +515,6 @@
         const diffDias = Math.round((dataProximoEnvio - hoje) / (1000 * 60 * 60 * 24));
         p.diasAteEnvio = diffDias;
 
-        // Se tem formulário recente e a devolutiva ainda não foi marcada como concluída
         const temRespostaNaoRevisada = !p.videoConcluido && totalFormsRecebidos > 0;
 
         if (temRespostaNaoRevisada) {
@@ -606,7 +597,6 @@
       });
     };
 
-    // CHECKBOX PERSISTENTE E AVANÇO REAL DE ETAPA
     window.handleCheckboxConcluir = function(id, isChecked) {
       const customData = getStoredCustomData();
       customData[id] = customData[id] || {};
@@ -616,7 +606,6 @@
       if (p) {
         p.videoConcluido = isChecked;
         if (isChecked) {
-          // Se marcou, avança o contador de etapa
           const ciclo = PLAN_CYCLES[p.plano] || PLAN_CYCLES["Mensal Start"];
           let atual = p.etapaManualIndex !== null ? p.etapaManualIndex : ((p.quinzenais?.length || 0) + (p.mensais?.length || 0));
           if (atual + 1 < ciclo.length) {
@@ -624,7 +613,6 @@
             p.etapaManualIndex = atual + 1;
           }
           
-          // Dispara Google Agenda
           fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: "POST",
             mode: "no-cors",
@@ -645,7 +633,6 @@
       window.renderDashboard();
     };
 
-    // ABERTURA DO MODAL DE EDIÇÃO DO PLANO E DATAS
     window.abrirModalEdicaoPlano = function() {
       if (!currentPatient) return;
       document.getElementById("edit_nome").value = currentPatient.nome;
@@ -680,7 +667,7 @@
       addInfo(dSaude, "Próximo Envio", currentPatient.proximoFormNome);
       addInfo(dSaude, "Data Programada", currentPatient.proximaDataEnvioStr.split('-').reverse().join('/'));
 
-      // 1. Anamnese
+      // 1. Respostas FORMULÁRIO INICIAL
       const cAna = document.getElementById("containerAnamnesePerguntas");
       cAna.innerHTML = "";
       if (currentPatient.anamnesePerguntas && currentPatient.anamnesePerguntas.length > 0) {
@@ -688,15 +675,15 @@
           cAna.innerHTML += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
         });
       } else {
-        cAna.innerHTML = `<p style="color:var(--inkFaint); padding:0.5rem;">Nenhuma anamnese registrada.</p>`;
+        cAna.innerHTML = `<p style="color:var(--inkFaint); padding:0.5rem;">Nenhuma resposta encontrada na aba FORMULARIO INICIAL.</p>`;
       }
 
-      // 2. Quinzenais
+      // 2. Respostas Acompanhamento Nutricional Quinzenal
       const cQui = document.getElementById("containerQuinzenaisPerguntas");
       cQui.innerHTML = "";
       if (currentPatient.quinzenais && currentPatient.quinzenais.length > 0) {
         currentPatient.quinzenais.forEach((q, idx) => {
-          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--pine);">Check-in Quinzenal #${idx+1} (${q.data.split('-').reverse().join('/')})</h4><span class="badge badge-green">${q.peso} kg</span></div>`;
+          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--pine);">Acompanhamento Quinzenal #${idx+1} (${q.data.split('-').reverse().join('/')})</h4><span class="badge badge-green">${q.peso ? q.peso + ' kg' : 'Registrado'}</span></div>`;
           q.respostas.forEach(item => {
             cardHtml += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
           });
@@ -704,15 +691,15 @@
           cQui.innerHTML += cardHtml;
         });
       } else {
-        cQui.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhum check-in quinzenal enviado ainda.</p>`;
+        cQui.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhum envio registrado na aba Acompanhamento Nutricional Quinzenal.</p>`;
       }
 
-      // 3. Mensais
+      // 3. Respostas Acompanhamento Nutricional Mensal
       const cMen = document.getElementById("containerMensaisPerguntas");
       cMen.innerHTML = "";
       if (currentPatient.mensais && currentPatient.mensais.length > 0) {
         currentPatient.mensais.forEach((m, idx) => {
-          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--amberDark);">Reavaliação Mensal #${idx+1} (${m.data.split('-').reverse().join('/')})</h4><span class="badge badge-amber">${m.peso} kg</span></div>`;
+          let cardHtml = `<div class="card" style="margin-bottom:1rem;"><div class="flex justify-between items-center" style="margin-bottom:0.75rem;"><h4 style="color:var(--amberDark);">Acompanhamento Mensal #${idx+1} (${m.data.split('-').reverse().join('/')})</h4><span class="badge badge-amber">${m.peso ? m.peso + ' kg' : 'Registrado'}</span></div>`;
           m.respostas.forEach(item => {
             cardHtml += `<div class="qa-card"><div class="qa-question">${item.pergunta}</div><div class="qa-answer">${item.resposta}</div></div>`;
           });
@@ -720,14 +707,17 @@
           cMen.innerHTML += cardHtml;
         });
       } else {
-        cMen.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhuma reavaliação mensal enviada ainda.</p>`;
+        cMen.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhum envio registrado na aba Acompanhamento Nutricional Mensal.</p>`;
       }
 
       renderKcalView();
 
-      const todos = [...(currentPatient.quinzenais || []), ...(currentPatient.mensais || [])];
-      const ultimoPeso = todos.length > 0 ? todos[todos.length - 1].peso : (currentPatient.pesoInicial || 70);
-      document.getElementById("detUltimoPeso").innerText = ultimoPeso ? `${ultimoPeso} kg` : "—";
+      const todosPesos = [];
+      if (currentPatient.pesoInicial) todosPesos.push(currentPatient.pesoInicial);
+      (currentPatient.quinzenais || []).forEach(q => { if (q.peso) todosPesos.push(q.peso); });
+      (currentPatient.mensais || []).forEach(m => { if (m.peso) todosPesos.push(m.peso); });
+      const ultimoPeso = todosPesos.length > 0 ? todosPesos[todosPesos.length - 1] : "—";
+      document.getElementById("detUltimoPeso").innerText = ultimoPeso !== "—" ? `${ultimoPeso} kg` : "—";
 
       window.renderChart();
       renderHistoricoConsolidado();
@@ -848,14 +838,14 @@
       const cont = document.getElementById("tableHistoricoConsolidado");
       cont.innerHTML = "";
       const evs = [];
-      if (currentPatient.pesoInicial) evs.push({ tipo: "Inicial / Anamnese", data: currentPatient.dataInicio, peso: currentPatient.pesoInicial });
-      (currentPatient.quinzenais || []).forEach(q => evs.push({ tipo: "Check-in Quinzenal", data: q.data, peso: q.peso }));
-      (currentPatient.mensais || []).forEach(m => evs.push({ tipo: "Reavaliação Mensal", data: m.data, peso: m.peso }));
+      if (currentPatient.pesoInicial) evs.push({ tipo: "FORMULÁRIO INICIAL", data: currentPatient.dataInicio, peso: currentPatient.pesoInicial });
+      (currentPatient.quinzenais || []).forEach(q => evs.push({ tipo: "Acompanhamento Quinzenal", data: q.data, peso: q.peso }));
+      (currentPatient.mensais || []).forEach(m => evs.push({ tipo: "Acompanhamento Mensal", data: m.data, peso: m.peso }));
 
       evs.forEach(e => {
         const item = document.createElement("div");
         item.style.cssText = "display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:0.875rem;";
-        item.innerHTML = `<span><b>${e.tipo}</b> (${e.data.split('-').reverse().join('/')})</span><span style="font-family:var(--font-mono); font-weight:700; color:var(--pine);">${e.peso} kg</span>`;
+        item.innerHTML = `<span><b>${e.tipo}</b> (${e.data.split('-').reverse().join('/')})</span><span style="font-family:var(--font-mono); font-weight:700; color:var(--pine);">${e.peso ? e.peso + ' kg' : '—'}</span>`;
         cont.appendChild(item);
       });
     }
@@ -865,8 +855,8 @@
       if (currentPatient.pesoInicial) {
         evs.push({ label: "Inicial", peso: currentPatient.pesoInicial });
       }
-      (currentPatient.quinzenais || []).forEach(q => evs.push({ label: q.data.split('-').reverse().join('/'), peso: q.peso }));
-      (currentPatient.mensais || []).forEach(m => evs.push({ label: m.data.split('-').reverse().join('/'), peso: m.peso }));
+      (currentPatient.quinzenais || []).forEach(q => { if (q.peso) evs.push({ label: q.data.split('-').reverse().join('/'), peso: q.peso }); });
+      (currentPatient.mensais || []).forEach(m => { if (m.peso) evs.push({ label: m.data.split('-').reverse().join('/'), peso: m.peso }); });
 
       const ctx = document.getElementById("chartEvolucao")?.getContext("2d");
       if (!ctx) return;
@@ -949,7 +939,7 @@
         window.renderDashboard();
       });
 
-      // Submit Cadastro Anamnese
+      // Submit Cadastro Manual
       document.getElementById("formAnamnese")?.addEventListener("submit", (e) => {
         e.preventDefault();
         const novoId = "p_" + Date.now();
@@ -990,6 +980,7 @@
         currentPatient.quinzenais.push({
           data: document.getElementById("qui_data").value,
           peso: Number(document.getElementById("qui_peso").value),
+          formulario: "Acompanhamento Nutricional Quinzenal",
           respostas: [
             { pergunta: "Adesão às refeições", resposta: `${document.getElementById("qui_adesao").value}/5` },
             { pergunta: "Nível de Estresse", resposta: `${document.getElementById("qui_estresse").value}/10` },
@@ -1010,6 +1001,7 @@
         currentPatient.mensais.push({
           data: document.getElementById("men_data").value,
           peso: Number(document.getElementById("men_peso").value),
+          formulario: "Acompanhamento Nutricional Mensal",
           respostas: [
             { pergunta: "Evolução Geral", resposta: document.getElementById("men_evolucao").value },
             { pergunta: "Meta para o próximo mês", resposta: document.getElementById("men_meta").value }
