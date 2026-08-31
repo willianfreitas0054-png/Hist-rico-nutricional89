@@ -56,6 +56,7 @@
 
     @media (min-width: 768px) {
       .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
 
@@ -178,7 +179,7 @@
       </div>
     </section>
 
-    <!-- TELA 2: PRONTUÁRIO COMPLETO COM TODAS AS ABAS -->
+    <!-- TELA 2: PRONTUÁRIO COMPLETO -->
     <section id="viewDetail" class="hidden">
       <div class="flex items-center justify-between flex-wrap gap-2" style="margin-bottom: 1rem;">
         <button onclick="window.backToDashboard()" class="btn btn-outline">← Voltar ao Painel</button>
@@ -240,7 +241,7 @@
         <div id="containerMensaisPerguntas"></div>
       </div>
 
-      <!-- Aba 4: Kcal e Macros Manuais -->
+      <!-- Aba 4: Kcal e Macros -->
       <div id="tabKcal" class="tab-pane hidden">
         <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
           <div>
@@ -378,7 +379,7 @@
         </div>
 
         <div class="card" style="background: var(--paper); border: 1px solid var(--line);">
-          <h4 style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--pineDark); margin-bottom: 0.5rem;">Distribuição de Macronutrientes (Cálculo Manual)</h4>
+          <h4 style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--pineDark); margin-bottom: 0.5rem;">Distribuição de Macronutrientes</h4>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div class="input-group"><label class="input-label">Proteína</label><input type="text" id="kc_prot" class="form-control" value="160g (2.0 g/kg)"></div>
             <div class="input-group"><label class="input-label">Carboidrato</label><input type="text" id="kc_carb" class="form-control" value="280g (3.5 g/kg)"></div>
@@ -667,7 +668,7 @@
       addInfo(dSaude, "Próximo Envio", currentPatient.proximoFormNome);
       addInfo(dSaude, "Data Programada", currentPatient.proximaDataEnvioStr.split('-').reverse().join('/'));
 
-      // 1. Respostas FORMULÁRIO INICIAL
+      // 1. FORMULÁRIO INICIAL
       const cAna = document.getElementById("containerAnamnesePerguntas");
       cAna.innerHTML = "";
       if (currentPatient.anamnesePerguntas && currentPatient.anamnesePerguntas.length > 0) {
@@ -678,7 +679,7 @@
         cAna.innerHTML = `<p style="color:var(--inkFaint); padding:0.5rem;">Nenhuma resposta encontrada na aba FORMULARIO INICIAL.</p>`;
       }
 
-      // 2. Respostas Acompanhamento Nutricional Quinzenal
+      // 2. Acompanhamento Nutricional Quinzenal
       const cQui = document.getElementById("containerQuinzenaisPerguntas");
       cQui.innerHTML = "";
       if (currentPatient.quinzenais && currentPatient.quinzenais.length > 0) {
@@ -694,7 +695,7 @@
         cQui.innerHTML = `<p style="color:var(--inkFaint); padding:1rem;">Nenhum envio registrado na aba Acompanhamento Nutricional Quinzenal.</p>`;
       }
 
-      // 3. Respostas Acompanhamento Nutricional Mensal
+      // 3. Acompanhamento Nutricional Mensal
       const cMen = document.getElementById("containerMensaisPerguntas");
       cMen.innerHTML = "";
       if (currentPatient.mensais && currentPatient.mensais.length > 0) {
